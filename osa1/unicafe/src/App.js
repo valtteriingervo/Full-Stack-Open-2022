@@ -26,7 +26,11 @@ const Statistics = ({ good, neutral, bad }) => {
       </>
     )
   }
-  return <p>No feedback given</p>
+  return (
+    <tr>
+      <td>No feedback given</td>
+    </tr>
+  )
 }
 
 const StatisticLine = ({ text, value }) => {
@@ -61,7 +65,12 @@ const StatisticLine = ({ text, value }) => {
     default:
       valueToShow = "<- Not a known stat type"
   }
-  return <p>{text} {valueToShow}</p>
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{valueToShow}</td>
+    </tr>
+  )
 }
 
 const App = () => {
@@ -77,7 +86,12 @@ const App = () => {
       <Button handleClick={() => setNeutral(neutral + 1)} text='neutral' />
       <Button handleClick={() => setBad(bad + 1)} text='bad' />
       <h1>statistics</h1>
-      <Statistics good={good} neutral={neutral} bad={bad} />
+      <table>
+        <tbody>
+          <Statistics good={good} neutral={neutral} bad={bad} />
+        </tbody>
+      </table>
+
     </div>
   )
 }
