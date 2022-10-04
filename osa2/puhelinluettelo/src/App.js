@@ -6,6 +6,8 @@ import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 
+import personService from './services/PersonsService'
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -19,10 +21,10 @@ const App = () => {
   const [filterTerm, setFilterTerm] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
@@ -42,7 +44,13 @@ const App = () => {
         name: newName,
         number: newNumber
       }
-      setPersons(persons.concat(personObject))
+
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+        })
+
     }
 
   }
@@ -60,6 +68,22 @@ const App = () => {
   const handleFilterTermChange = (event) => {
     console.log(event.target.value)
     setFilterTerm(event.target.value)
+  }
+
+  const deletePerson = (id) => {
+    personService
+      .delPerson(id)
+      .then(responseCode => {
+        console.log(`deleted person ID ${id} with status code ${responseCode}`)
+      })
+      .then(() => {
+        personService
+          .getAll()
+          .then(updatedPersons => {
+            setPersons(updatedPersons)
+          })
+      })
+
   }
 
   const personsToShow = persons.filter(person => {
@@ -89,7 +113,10 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons personsToShow={personsToShow} />
+      <Persons
+        personsToShow={personsToShow}
+        deletePerson={deletePerson}
+      />
 
     </div>
   )
