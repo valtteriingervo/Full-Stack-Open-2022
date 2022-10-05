@@ -1,3 +1,14 @@
 {
-  "persons": []
+  "persons": [
+    {
+      "name": "Matti Muurainen",
+      "number": "20320023",
+      "id": 1
+    },
+    {
+      "name": "Johanna Tzumi",
+      "number": "23921932",
+      "id": 3
+    }
+  ]
 }

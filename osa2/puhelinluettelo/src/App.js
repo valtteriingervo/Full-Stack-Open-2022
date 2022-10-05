@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 
-import axios from 'axios'
-
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
@@ -71,19 +69,27 @@ const App = () => {
   }
 
   const deletePerson = (id) => {
-    personService
-      .delPerson(id)
-      .then(responseCode => {
-        console.log(`deleted person ID ${id} with status code ${responseCode}`)
-      })
-      .then(() => {
-        personService
-          .getAll()
-          .then(updatedPersons => {
-            setPersons(updatedPersons)
-          })
-      })
+    console.log(id, 'id')
+    const delPersonName = persons.find(person => person.id === id).name
+    const confirmMsg = `Delete ${delPersonName} ?`
 
+    if (!window.confirm(confirmMsg)) {
+      console.log('The user decided to cancel the deletion')
+    }
+    else {
+      personService
+        .delPerson(id)
+        .then(responseCode => {
+          console.log(`deleted person ${delPersonName} with status code ${responseCode}`)
+        })
+        .then(() => {
+          personService
+            .getAll()
+            .then(updatedPersons => {
+              setPersons(updatedPersons)
+            })
+        })
+    }
   }
 
   const personsToShow = persons.filter(person => {
