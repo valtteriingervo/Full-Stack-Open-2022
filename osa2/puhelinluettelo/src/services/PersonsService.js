@@ -18,4 +18,12 @@ const delPerson = id => {
     return request.then(response => response.status)
 }
 
-export default { getAll, create, delPerson }
+const changePersonNumber = (existingPersonObj, newNumber) => {
+    const changeUrl = `${baseUrl}/${existingPersonObj.id}`
+    const changedPersonObj = { ...existingPersonObj, number: newNumber }
+    const request = axios.put(changeUrl, changedPersonObj)
+
+    return request.then(response => response.data)
+}
+
+export default { getAll, create, delPerson, changePersonNumber }

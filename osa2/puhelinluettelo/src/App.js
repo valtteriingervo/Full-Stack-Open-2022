@@ -35,7 +35,25 @@ const App = () => {
       person => person.name === newName)
 
     if (nameAlreadyInList) {
-      alert(`${newName} is already added to the phonebook`)
+      const existingPerson = personFinderByName(newName)
+      const existingNameMsg
+        = `${existingPerson} is already added to phonebook, replace the old number with a new one?`
+      if (window.confirm(existingNameMsg)) {
+
+        const existingPersonObj =
+          persons.find(person => person.name === newName)
+
+        personService
+          .changePersonNumber(existingPersonObj, newNumber)
+          .then(responseData => {
+            console.log(responseData, 'responseData')
+            return 'time to refresh'
+          })
+          .then((result) => {
+            console.log(result)
+            refreshPersons()
+          })
+      }
     }
     else {
       const personObject = {
@@ -48,29 +66,40 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
         })
-
     }
+  }
 
+  const refreshPersons = () => {
+    personService
+      .getAll()
+      .then(updatedPersons => {
+        setPersons(updatedPersons)
+      })
   }
 
   const handleNameChange = (event) => {
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value)
     setNewNumber(event.target.value)
   }
 
   const handleFilterTermChange = (event) => {
-    console.log(event.target.value)
     setFilterTerm(event.target.value)
+  }
+
+  const personFinder = id => {
+    return persons.find(person => person.id === id).name
+  }
+
+  const personFinderByName = name => {
+    return persons.find(person => person.name === name).name
   }
 
   const deletePerson = (id) => {
     console.log(id, 'id')
-    const delPersonName = persons.find(person => person.id === id).name
+    const delPersonName = personFinder(id)
     const confirmMsg = `Delete ${delPersonName} ?`
 
     if (!window.confirm(confirmMsg)) {
@@ -81,13 +110,11 @@ const App = () => {
         .delPerson(id)
         .then(responseCode => {
           console.log(`deleted person ${delPersonName} with status code ${responseCode}`)
+          return 'time to refresh'
         })
-        .then(() => {
-          personService
-            .getAll()
-            .then(updatedPersons => {
-              setPersons(updatedPersons)
-            })
+        .then((result) => {
+          console.log(result)
+          refreshPersons()
         })
     }
   }

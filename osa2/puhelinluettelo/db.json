@@ -1,14 +1,9 @@
 {
   "persons": [
     {
-      "name": "Matti Muurainen",
-      "number": "20320023",
+      "name": "Juuso Mutti",
+      "number": "999",
       "id": 1
-    },
-    {
-      "name": "Johanna Tzumi",
-      "number": "23921932",
-      "id": 3
     }
   ]
 }
