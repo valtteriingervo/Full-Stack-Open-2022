@@ -13,6 +13,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [statusMessage, setStatusMessage] = useState(null)
+  const [statusIsError, setStatusErrorOrNot] = useState(true)
   /* 
   ** Note that we assume that each person in the phonebook has
   ** first name and a surname separated by a space, so the initial filter
@@ -56,6 +57,10 @@ const App = () => {
             refreshPersons()
             displayStatusMessage(`Number of ${newName} changed to ${newNumber}`)
           })
+          .catch((error) => {
+            console.log(error)
+            displayStatusMessage(`Information of ${newName} has already been removed from server`, true)
+          })
       }
     }
     else {
@@ -73,8 +78,10 @@ const App = () => {
     }
   }
 
-  const displayStatusMessage = (message) => {
+  // Use default parameter for isError, assume it's a good operation
+  const displayStatusMessage = (message, isError = false) => {
     // Display message
+    setStatusErrorOrNot(isError)
     setStatusMessage(message)
     // Hide message after X seconds
     setTimeout(() => {
@@ -142,7 +149,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={statusMessage} />
+      <Notification message={statusMessage} isError={statusIsError} />
 
       <Filter
         filterTerm={filterTerm}
