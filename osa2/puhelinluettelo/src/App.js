@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 
 import personService from './services/PersonsService'
 
@@ -11,6 +12,7 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [statusMessage, setStatusMessage] = useState(null)
   /* 
   ** Note that we assume that each person in the phonebook has
   ** first name and a surname separated by a space, so the initial filter
@@ -52,6 +54,7 @@ const App = () => {
           .then((result) => {
             console.log(result)
             refreshPersons()
+            displayStatusMessage(`Number of ${newName} changed to ${newNumber}`)
           })
       }
     }
@@ -65,8 +68,18 @@ const App = () => {
         .create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          displayStatusMessage(`Added ${returnedPerson.name}`)
         })
     }
+  }
+
+  const displayStatusMessage = (message) => {
+    // Display message
+    setStatusMessage(message)
+    // Hide message after X seconds
+    setTimeout(() => {
+      setStatusMessage(null)
+    }, 4000)
   }
 
   const refreshPersons = () => {
@@ -115,6 +128,7 @@ const App = () => {
         .then((result) => {
           console.log(result)
           refreshPersons()
+          displayStatusMessage(`Deleted ${delPersonName}`)
         })
     }
   }
@@ -128,6 +142,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={statusMessage} />
 
       <Filter
         filterTerm={filterTerm}
